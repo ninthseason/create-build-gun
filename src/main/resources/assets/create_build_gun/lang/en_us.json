@@ -1,0 +1,10 @@
+{
+  "itemGroup.create_build_gun": "Create Build Gun",
+  "item.create_build_gun.build_gun": "Build Gun",
+  "create_build_gun.gui.tab.a_base": "Base",
+  "create_build_gun.gui.tab.b_advance": "Advance",
+  "create_build_gun.gui.tab.c_misc": "Misc",
+  "create_build_gun.gui.entry.t1.nbt": "Test 1",
+  "create_build_gun.gui.entry.t2.nbt": "Test 2",
+  "create_build_gun.gui.entry.t3.nbt": "Test 3"
+}
