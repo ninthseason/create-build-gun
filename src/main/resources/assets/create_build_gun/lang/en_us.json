@@ -10,5 +10,7 @@
   "create_build_gun.command.set_stage_success": "Set stage to",
   "create_build_gun.command.get_stage_success": "Now stage is",
   "create_build_gun.tips.cantafford": "You don't have enough materials to build this schematic!",
-  "create_build_gun.tips.stage_not_reached": "You haven't reached the required stage to build this schematic! You should not see this message, it means that your client config is not sync to server config."
+  "create_build_gun.tips.stage_not_reached": "You haven't reached the required stage to build this schematic! You should not see this message, it means that your client config is not sync to server config.",
+  "create_build_gun.gui.description.materials_cost": "Materials Cost:",
+  "create_build_gun.gui.description.no_materials_need": "No materials need."
 }

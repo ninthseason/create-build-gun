@@ -1,5 +1,7 @@
 package kl1nge5.create_build_gun;
 
+import kl1nge5.create_build_gun.network.ToClient.ResponseStagePackage;
+import kl1nge5.create_build_gun.network.ToServer.RequestStagePackage;
 import kl1nge5.create_build_gun.network.ToServer.SelectSchematicPackage;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -17,6 +19,16 @@ public class AllNetworks {
                 SelectSchematicPackage.TYPE,
                 SelectSchematicPackage.STREAM_CODEC,
                 SelectSchematicPackage::serverHandler
+        );
+        registrar.playToServer(
+                RequestStagePackage.TYPE,
+                RequestStagePackage.STREAM_CODEC,
+                RequestStagePackage::serverHandler
+        );
+        registrar.playToClient(
+                ResponseStagePackage.TYPE,
+                ResponseStagePackage.STREAM_CODEC,
+                ResponseStagePackage::clientHandler
         );
     }
 }
