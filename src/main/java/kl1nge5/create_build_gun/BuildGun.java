@@ -36,10 +36,10 @@ public class BuildGun
         AllMenus.init();
         AllScreens.init(modEventBus);
         AllNetworks.init(modEventBus);
-
-        NeoForge.EVENT_BUS.addListener(ReloadListener::serverReload);
-        modEventBus.addListener(ReloadListener::clientReload);
+        ReloadListener.init(modEventBus);
+        AllCommands.init();
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
+
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
     private void commonSetup(final FMLCommonSetupEvent event)
