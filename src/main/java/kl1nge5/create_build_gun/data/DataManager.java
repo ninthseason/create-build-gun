@@ -43,11 +43,11 @@ public class DataManager {
         return null;
     }
 
-    public static ConfigSpec.SchematicEntry.SchematicConfig.SchematicCostEntry[] getCostById(String id) {
+    public static ConfigSpec.SchematicEntry.SchematicConfig getConfigById(String id) {
         if (config == null) return null;
         for (ConfigSpec.SchematicEntry s : config.schematics) {
             if (s.id.equals(id)) {
-                return s.config.cost;
+                return s.config;
             }
         }
         return null;

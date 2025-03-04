@@ -3,8 +3,10 @@ package kl1nge5.create_build_gun.mixin;
 import com.simibubi.create.content.schematics.packet.SchematicPlacePacket;
 import kl1nge5.create_build_gun.AllDataComponents;
 import kl1nge5.create_build_gun.AllItems;
+import kl1nge5.create_build_gun.BuildGun;
 import kl1nge5.create_build_gun.data.ConfigSpec;
 import kl1nge5.create_build_gun.data.DataManager;
+import kl1nge5.create_build_gun.data.StageData;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -14,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.saveddata.SavedData;
 import org.checkerframework.checker.units.qual.A;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,11 +38,26 @@ public class CreateSchematicPlacePacketMixin {
     }
 
     @Inject(method = "handle", at = @At("HEAD"), remap = false, cancellable = true)
-    private void takeCost(ServerPlayer player, CallbackInfo ci) {
+    private void takeCostAndCheckStage(ServerPlayer player, CallbackInfo ci) {
+        // 排除不必消耗材料的情况
         if (player == null || player.isCreative()) return;
         if (!stack.is(AllItems.BUILD_GUN.asItem())) return;
+
+        // 如果没有配置耗材，则直接放行
         String sid = stack.get(AllDataComponents.SCHEMATIC_ID);
-        ConfigSpec.SchematicEntry.SchematicConfig.SchematicCostEntry[] cost = DataManager.getCostById(sid);
+        ConfigSpec.SchematicEntry.SchematicConfig config = DataManager.getConfigById(sid);
+        if (config == null) return;
+
+        // 检查当前阶段建筑是否解锁，若否则取消放置
+        int world_stage = ((StageData) player.server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<SavedData>(StageData::new, StageData::load), BuildGun.MODID)).stage;
+        if (world_stage < config.stage) {
+            player.sendSystemMessage(Component.translatable("create_build_gun.tips.stage_not_reached"));
+            ci.cancel();
+            return;
+        }
+
+        // 检查玩家背包是否有足够的材料，若否则取消放置，反之消耗材料并放行
+        ConfigSpec.SchematicEntry.SchematicConfig.SchematicCostEntry[] cost = config.cost;
         if (cost == null) return;
         boolean affordable = true;
         for (ConfigSpec.SchematicEntry.SchematicConfig.SchematicCostEntry costEntry : cost) {
