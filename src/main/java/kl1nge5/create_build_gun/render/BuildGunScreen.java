@@ -140,7 +140,7 @@ public class BuildGunScreen extends AbstractContainerScreen<DummyMenu> {
             TabDisplayHelper tabDisplayHelper = new TabDisplayHelper(ideal_split + 4, top + 1, ideal_button_width, ideal_button_height, ideal_split2 - ideal_split);
             PacketDistributor.sendToServer(new RequestStagePackage());
             for (ConfigSpec.SchematicEntry schematic : DataManager.config.schematics) {
-                if (schematic.tab.equals(current_tab) && schematic.config.stage <= CachedClientStage.stage) {
+                if (schematic.tab != null && schematic.tab.equals(current_tab) && schematic.config.stage <= CachedClientStage.stage) {
                     this.addRenderableWidget(tabDisplayHelper.nextEntry(this, schematic));
                 }
             }

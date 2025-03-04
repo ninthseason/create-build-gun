@@ -8,16 +8,12 @@ import java.nio.file.Path;
 public class DataManager {
     private static final Logger LOGGER = LogUtils.getLogger();
     public static final Path dataFolder = Path.of("BuildGunData").toAbsolutePath();
-    public static final Path schematicFolder = dataFolder.resolve("Schematics");
     public static final Path configFile = dataFolder.resolve("config.json");
     public static ConfigSpec config = null;
 
     public static void init() {
         if (!dataFolder.toFile().exists()) {
             dataFolder.toFile().mkdir();
-        }
-        if (!schematicFolder.toFile().exists()) {
-            schematicFolder.toFile().mkdir();
         }
         if (!configFile.toFile().exists()) {
             try {
