@@ -1,5 +1,5 @@
 {
-  "itemGroup.create_build_gun": "机械动力:建造枪",
+  "itemGroup.create_build_gun": "机械动力 | 建造枪",
   "item.create_build_gun.build_gun": "建造枪",
   "create_build_gun.gui.tab.a_base": "基础",
   "create_build_gun.gui.tab.b_advance": "高级",

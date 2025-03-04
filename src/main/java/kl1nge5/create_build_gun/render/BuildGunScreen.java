@@ -1,6 +1,7 @@
 package kl1nge5.create_build_gun.render;
 
 import kl1nge5.create_build_gun.BuildGun;
+import kl1nge5.create_build_gun.data.ConfigSpec;
 import kl1nge5.create_build_gun.data.DataManager;
 import kl1nge5.create_build_gun.network.ToServer.SelectSchematicPackage;
 import kl1nge5.create_build_gun.render.widgets.TextButton;
@@ -46,7 +47,8 @@ public class BuildGunScreen extends AbstractContainerScreen<DummyMenu> {
     }
 
     @Override
-    protected void init() {}
+    protected void init() {
+    }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -55,15 +57,19 @@ public class BuildGunScreen extends AbstractContainerScreen<DummyMenu> {
             this.tabInsertHelper = new TabInsertHelper(30, 30, 10, 60);
             this.tabDisplayHelper = new TabDisplayHelper(30, 60, 10, 30, 60, 384);
 
-            this.renderables.clear();
-            for (String t : DataManager.schematicMap.keySet()) {
+            this.clearWidgets();
+
+            for (ConfigSpec.TabEntry t : DataManager.config.tabs) {
                 if (this.current_tab == null) {
-                    this.current_tab = t;
+                    this.current_tab = t.id;
                 }
                 this.addRenderableWidget(tabInsertHelper.nextTab(this, t));
             }
             if (this.current_tab != null) {
-                for (String s : DataManager.schematicMap.get(this.current_tab)) {
+                for (ConfigSpec.SchematicEntry s : DataManager.config.schematics) {
+                    if (!s.tab.equals(this.current_tab)) {
+                        continue;
+                    }
                     this.addRenderableWidget(tabDisplayHelper.nextEntry(this, s));
                 }
             }
@@ -89,11 +95,11 @@ class TabInsertHelper {
         this.width = width;
     }
 
-    public TextButton nextTab(Screen parent, String title) {
-        Component t = Component.translatable("create_build_gun.gui.tab." + title);
+    public TextButton nextTab(Screen parent, ConfigSpec.TabEntry tab) {
+        Component t = Component.translatable(tab.name);
         TextButton textButton = new TextButton(parent, x + offset, y, width, 20, t, (e) -> {
             if (e instanceof TextButton && ((TextButton) e).parent instanceof BuildGunScreen) {
-                ((BuildGunScreen) ((TextButton) e).parent).current_tab = title;
+                ((BuildGunScreen) ((TextButton) e).parent).current_tab = tab.id;
                 ((BuildGunScreen) ((TextButton) e).parent).dirty = true;
             }
         });
@@ -121,14 +127,14 @@ class TabDisplayHelper {
         this.total_width = total_width;
     }
 
-    public TextButton nextEntry(Screen parent, String title) {
-        Component t = Component.translatable("create_build_gun.gui.entry." + title);
-        TextButton textButton = new TextButton(parent, x + offset_x, y + offset_y, width, 20, t, (e) -> {
+    public TextButton nextEntry(Screen parent, ConfigSpec.SchematicEntry schematic) {
+        TextButton textButton = new TextButton(parent, x + offset_x, y + offset_y, width, 20, Component.translatable(schematic.name), (e) -> {
             Player player = Minecraft.getInstance().player;
             if (player == null) return;
-            PacketDistributor.sendToServer(new SelectSchematicPackage(title, player.getMainHandItem().copy()));
+            PacketDistributor.sendToServer(new SelectSchematicPackage(schematic.id, player.getMainHandItem().copy()));
             player.closeContainer();
         });
+
         this.offset_x += stride_x + width;
         if (this.offset_x + this.width > this.total_width) {
             this.offset_x = 0;
