@@ -8,5 +8,6 @@
   "create_build_gun.gui.entry.t2.nbt": "测试 2",
   "create_build_gun.gui.entry.t3.nbt": "测试 3",
   "create_build_gun.command.set_stage_success": "设置阶段为",
-  "create_build_gun.command.get_stage_success": "当前阶段为"
+  "create_build_gun.command.get_stage_success": "当前阶段为",
+  "create_build_gun.tips.cantafford": "你没有足够的材料!"
 }

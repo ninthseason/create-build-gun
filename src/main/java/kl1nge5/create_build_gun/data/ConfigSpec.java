@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Arrays;
 
 public class ConfigSpec {
     public SchematicEntry[] schematics;
@@ -22,37 +21,9 @@ public class ConfigSpec {
             public SchematicCostEntry[] cost;
 
             public static class SchematicCostEntry {
-                String id;
-                int count;
-
-                @Override
-                public String toString() {
-                    return "SchematicCostEntry{" +
-                            "id='" + id + '\'' +
-                            ", count=" + count +
-                            '}';
-                }
+                public String id;
+                public int count;
             }
-
-            @Override
-            public String toString() {
-                return "SchematicConfig{" +
-                        "stage=" + stage +
-                        ", cost=" + Arrays.toString(cost) +
-                        '}';
-
-            }
-        }
-
-        @Override
-        public String toString() {
-            return "SchematicEntry{" +
-                    "id='" + id + '\'' +
-                    ", file='" + file + '\'' +
-                    ", tab='" + tab + '\'' +
-                    ", id='" + name + '\'' +
-                    ", config=" + config +
-                    '}';
         }
     }
 
@@ -60,23 +31,6 @@ public class ConfigSpec {
         public String id;
         public String name;
         public int ordinal;
-
-        @Override
-        public String toString() {
-            return "TabEntry{" +
-                    "id='" + id + '\'' +
-                    ", id='" + name + '\'' +
-                    ", ordinal=" + ordinal +
-                    '}';
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "ConfigSpec{" +
-                "schematics=" + Arrays.toString(schematics) +
-                ", tabs=" + Arrays.toString(tabs) +
-                '}';
     }
 
     public static ConfigSpec loadFrom(String file) {

@@ -32,6 +32,7 @@ public class BuildGunItem extends Item {
                 ItemStack build_gun = player.getItemInHand(usedHand);
                 build_gun.remove(AllDataComponents.SCHEMATIC_FILE);
                 build_gun.remove(AllDataComponents.SCHEMATIC_DEPLOYED);
+                build_gun.remove(kl1nge5.create_build_gun.AllDataComponents.SCHEMATIC_ID);
                 // Lazy:
                 // build_gun.remove(AllDataComponents.SCHEMATIC_ANCHOR);
                 // build_gun.remove(AllDataComponents.SCHEMATIC_BOUNDS);

@@ -1,14 +1,9 @@
 package kl1nge5.create_build_gun.data;
 
-import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.FileReader;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.TreeMap;
 
 public class DataManager {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -32,11 +27,9 @@ public class DataManager {
             }
         }
 
-        Gson gson = new Gson();
-        try {
-            config = gson.fromJson(new FileReader(configFile.toFile()), ConfigSpec.class);
-        } catch (Exception e) {
-            LOGGER.error("Failed to load config file", e);
+        config = ConfigSpec.loadFrom(configFile.toString());
+        if (config == null) {
+            LOGGER.warn("Failed to load config file {}", configFile);
         }
     }
 
@@ -45,6 +38,16 @@ public class DataManager {
         for (ConfigSpec.SchematicEntry s : config.schematics) {
             if (s.id.equals(id)) {
                 return s.file;
+            }
+        }
+        return null;
+    }
+
+    public static ConfigSpec.SchematicEntry.SchematicConfig.SchematicCostEntry[] getCostById(String id) {
+        if (config == null) return null;
+        for (ConfigSpec.SchematicEntry s : config.schematics) {
+            if (s.id.equals(id)) {
+                return s.config.cost;
             }
         }
         return null;

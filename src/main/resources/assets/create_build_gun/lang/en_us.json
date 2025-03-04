@@ -8,5 +8,6 @@
   "create_build_gun.gui.entry.t2.nbt": "Test 2",
   "create_build_gun.gui.entry.t3.nbt": "Test 3",
   "create_build_gun.command.set_stage_success": "Set stage to",
-  "create_build_gun.command.get_stage_success": "Now stage is"
+  "create_build_gun.command.get_stage_success": "Now stage is",
+  "create_build_gun.tips.cantafford": "You don't have enough materials to build this schematic!"
 }

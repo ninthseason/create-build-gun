@@ -18,12 +18,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.slf4j.Logger;
-
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.zip.GZIPInputStream;
 
 public record SelectSchematicPackage(String id, ItemStack item) implements CustomPacketPayload {
@@ -70,6 +71,7 @@ public record SelectSchematicPackage(String id, ItemStack item) implements Custo
             build_gun.set(AllDataComponents.SCHEMATIC_FILE, schematic);
             build_gun.set(AllDataComponents.SCHEMATIC_BOUNDS, size);
             build_gun.set(AllDataComponents.SCHEMATIC_OWNER, "__BuildGun__");
+            build_gun.set(kl1nge5.create_build_gun.AllDataComponents.SCHEMATIC_ID, payload.id);
         } catch (IOException e) {
             LOGGER.warn("Failed to read schematic", e);
         }
