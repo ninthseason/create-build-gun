@@ -38,7 +38,8 @@ Note: JSON does not support comments. The comments here are for readability only
             "id": "create:cogwheel",
             "count": 256
           }
-        ]
+        ],
+        "removable": true  // added in 0.0.3 version, mark whether the building can be removed, see 0.0.3 version update below
       }
     }
   ]
@@ -114,6 +115,26 @@ Exploit Process:
 
 A simple fix for this exploit is to ban players with the username `__BuildGun__`.
 
+## New Features in Version 0.0.3
+When the Build Gun is held in the off-hand, it enters demolition mode, allowing you to remove constructed blueprints by right-clicking.
+
+![](./docs/removal.png)
+
+You can specify in the configuration file whether a schematic can be removed.
+
+The demolition logic checks each block within the range against the schematic. If a block matches the schematic, it is removed; otherwise, it remains.
+
+As a result, any manually added blocks or blocks that have changed state after construction will be preserved.
+
+The necessary information for demolition is generated at the time of construction. Therefore, if `"removable": true` was not set in the configuration during construction, modifying the configuration later will not allow the structure to be removed.
+
+In this version removing buildings will not return materials. It may be added in future versions.
+
+## A Potential Exploit in Demolition Mode
+
+Since there is no validation of the distance between the player and the structure being demolished, an untrustworthy player could forge packets to remove buildings from any distance.
+
+
 # 机械动力 | 建造枪
 
 添加了一个在生存模式中打印蓝图的工具。右键以打开菜单选择蓝图，Shift+右键取消选择的蓝图。
@@ -153,7 +174,8 @@ A simple fix for this exploit is to ban players with the username `__BuildGun__`
             "id": "create:cogwheel",
             "count": 256
           }
-        ]
+        ],
+        "removable": true  // 0.0.3 版本新增，标记建筑是否可以拆除，详见下文0.0.3版本更新
       }
     }
   ]
@@ -232,4 +254,23 @@ A simple fix for this exploit is to ban players with the username `__BuildGun__`
 
 这个漏洞也有一个简单的解决方案：ban掉名为`__BuildGun__`的玩家。
 
+## 0.0.3 版本新增功能
+
+当将建造枪放于副手时，将进入拆除模式，右键点击可以将建造的蓝图拆除。
+
+![](./docs/removal.png)
+
+可在配置文件中指定原理图是否能够拆除。
+
+拆除的逻辑是逐一核对范围内的方块是否与原理图一致，如果一致则拆除，否则不拆除。
+
+因此，在建造完成后人为再添加的方块，以及状态改变的方块将保留。
+
+拆除建筑所需的信息是在建造时生成的，因此，如果你在建造时配置中未设置`"removable": true`，那么即使后来修改了配置文件，也无法拆除。
+
+当前版本拆除建筑不会返还材料，该功能可能会在后续版本中加入。
+
+## 拆除模式的一个漏洞
+
+因为并未核对玩家请求拆除的建筑和玩家所在位置的距离， 不安分的玩家可以通过伪造数据包无视距离拆除建筑。
 

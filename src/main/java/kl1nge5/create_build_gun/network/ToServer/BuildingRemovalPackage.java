@@ -40,6 +40,10 @@ public record BuildingRemovalPackage(int entityId) implements CustomPacketPayloa
     public static void serverHandler(BuildingRemovalPackage payload, IPayloadContext context) {
         int entityId = payload.entityId;
         Level level = context.player().level();
+        if (!(level.getEntity(entityId) instanceof BuildingEntity)) {
+            LOGGER.warn("Entity {} requested by Player {} is not a BuildingEntity", entityId, context.player().getScoreboardName());
+            return;
+        };
         BuildingEntity entity = (BuildingEntity) level.getEntity(entityId);
 
         String schematicPath = DataManager.findSchematicById(entity.sid);
