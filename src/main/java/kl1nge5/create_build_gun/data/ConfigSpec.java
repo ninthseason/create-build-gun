@@ -19,6 +19,7 @@ public class ConfigSpec {
         public static class SchematicConfig {
             public int stage;
             public String description;
+            public boolean removable;
             public SchematicCostEntry[] cost;
 
             public static class SchematicCostEntry {

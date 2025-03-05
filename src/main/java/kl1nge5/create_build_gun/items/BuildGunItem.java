@@ -33,10 +33,10 @@ public class BuildGunItem extends Item {
                 build_gun.remove(AllDataComponents.SCHEMATIC_FILE);
                 build_gun.remove(AllDataComponents.SCHEMATIC_DEPLOYED);
                 build_gun.remove(kl1nge5.create_build_gun.AllDataComponents.SCHEMATIC_ID);
-                // Lazy:
-                // build_gun.remove(AllDataComponents.SCHEMATIC_ANCHOR);
-                // build_gun.remove(AllDataComponents.SCHEMATIC_BOUNDS);
-                // build_gun.remove(AllDataComponents.SCHEMATIC_OWNER);
+                build_gun.remove(AllDataComponents.SCHEMATIC_ANCHOR);
+                build_gun.remove(AllDataComponents.SCHEMATIC_ROTATION);
+                build_gun.remove(AllDataComponents.SCHEMATIC_MIRROR);
+
             } else if (!level.isClientSide() && player instanceof ServerPlayer) {
                 player.openMenu(new SimpleMenuProvider(
                         (containerId, playerInventory, player_) -> new DummyMenu(containerId, playerInventory),
@@ -46,4 +46,6 @@ public class BuildGunItem extends Item {
         }
         return super.use(level, player, usedHand);
     }
+
+
 }

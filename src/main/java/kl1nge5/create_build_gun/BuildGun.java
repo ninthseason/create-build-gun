@@ -1,7 +1,10 @@
 package kl1nge5.create_build_gun;
 
 import kl1nge5.create_build_gun.data.ReloadListener;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -26,6 +29,7 @@ public class BuildGun
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU, MODID);
     public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPE = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
 
     public BuildGun(IEventBus modEventBus, ModContainer modContainer)
     {
@@ -35,6 +39,7 @@ public class BuildGun
         CREATIVE_MODE_TABS.register(modEventBus);
         MENU_TYPES.register(modEventBus);
         DATA_COMPONENTS.register(modEventBus);
+        ENTITY_TYPE.register(modEventBus);
 
         AllItems.init();
         AllMenus.init();
@@ -43,6 +48,7 @@ public class BuildGun
         ReloadListener.init(modEventBus);
         AllCommands.init();
         AllDataComponents.init();
+        AllEntityTypes.init(modEventBus);
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
