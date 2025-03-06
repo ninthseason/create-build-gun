@@ -17,9 +17,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -91,33 +93,55 @@ public class CreateSchematicPlacePacketMixin {
                 Vec3i vec3i = stack.get(AllDataComponents.SCHEMATIC_BOUNDS);
                 BlockPos anchorPos = stack.get(AllDataComponents.SCHEMATIC_ANCHOR);
                 Rotation rotation = stack.get(AllDataComponents.SCHEMATIC_ROTATION);
-                BlockPos anotherPos;
+                Mirror mirror = stack.get(AllDataComponents.SCHEMATIC_MIRROR);
+
                 if (vec3i != null && anchorPos != null) {
-                    switch (rotation) {
-                        case CLOCKWISE_90:
-                            anotherPos = anchorPos.offset(-vec3i.getZ() + 1, vec3i.getY(), vec3i.getX());
+                    Vec3 bVec = new Vec3(vec3i.getX(), vec3i.getY(), vec3i.getZ());
+                    if (rotation == Rotation.CLOCKWISE_90) {
+                        if (mirror == Mirror.NONE) {
                             anchorPos = anchorPos.offset(1, 0, 0);
-                            break;
-                        case CLOCKWISE_180:
-                            anotherPos = anchorPos.offset(-vec3i.getX() + 1, vec3i.getY(), -vec3i.getZ() + 1);
+                            bVec = new Vec3(-vec3i.getZ(), vec3i.getY(), vec3i.getX());
+                        } else if (mirror == Mirror.FRONT_BACK) {
                             anchorPos = anchorPos.offset(1, 0, 1);
-                            break;
-                        case COUNTERCLOCKWISE_90:
-                            anotherPos = anchorPos.offset(vec3i.getZ(), vec3i.getY(), -vec3i.getX() + 1);
+                            bVec = new Vec3(-vec3i.getZ(), vec3i.getY(), -vec3i.getX());
+                        } else {
+                            bVec = new Vec3(vec3i.getZ(), vec3i.getY(), vec3i.getX());
+                        }
+                    } else if (rotation == Rotation.CLOCKWISE_180) {
+                        if (mirror == Mirror.NONE) {
+                            anchorPos = anchorPos.offset(1, 0, 1);
+                            bVec = new Vec3(-vec3i.getX(), vec3i.getY(), -vec3i.getZ());
+                        } else if (mirror == Mirror.FRONT_BACK) {
                             anchorPos = anchorPos.offset(0, 0, 1);
-                            break;
-                        case NONE:
-                            anotherPos = anchorPos.offset(vec3i);
-                            break;
-                        case null:  // wont happen
-                            anotherPos = anchorPos;
-                            break;
+                            bVec = new Vec3(vec3i.getX(), vec3i.getY(), -vec3i.getZ());
+                        } else {
+                            anchorPos = anchorPos.offset(1, 0, 0);
+                            bVec = new Vec3(-vec3i.getX(), vec3i.getY(), vec3i.getZ());
+                        }
+                    } else if (rotation == Rotation.COUNTERCLOCKWISE_90) {
+                        if (mirror == Mirror.NONE) {
+                            anchorPos = anchorPos.offset(0, 0, 1);
+                            bVec = new Vec3(vec3i.getZ(), vec3i.getY(), -vec3i.getX());
+                        } else if (mirror == Mirror.LEFT_RIGHT) {
+                            anchorPos = anchorPos.offset(1, 0, 1);
+                            bVec = new Vec3(-vec3i.getZ(), vec3i.getY(), -vec3i.getX());
+                        } else {
+                            bVec = new Vec3(vec3i.getZ(), vec3i.getY(), vec3i.getX());
+                        }
+                    } else {
+                        if (mirror == Mirror.FRONT_BACK) {
+                            anchorPos = anchorPos.offset(1, 0, 0);
+                            bVec = new Vec3(-vec3i.getX(), vec3i.getY(), vec3i.getZ());
+                        } else if (mirror == Mirror.LEFT_RIGHT) {
+                            anchorPos = anchorPos.offset(0, 0, 1);
+                            bVec = new Vec3(vec3i.getX(), vec3i.getY(), -vec3i.getZ());
+                        }
                     }
-                    BuildingEntity buildingEntity = new BuildingEntity(player.level(), new AABB(anchorPos.getX(), anchorPos.getY(), anchorPos.getZ(), anotherPos.getX(), anotherPos.getY(), anotherPos.getZ()), stack);
+                    Vec3 anchorVec = new Vec3(anchorPos.getX(), anchorPos.getY(), anchorPos.getZ());
+                    BuildingEntity buildingEntity = new BuildingEntity(player.level(), new AABB(anchorVec, anchorVec.add(bVec)), stack);
                     player.level().addFreshEntity(buildingEntity);
                 }
             }
-
         } else {
             player.sendSystemMessage(Component.translatable("create_build_gun.tips.cantafford"));
             ci.cancel();
