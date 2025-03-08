@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.Vector;
 
 public record BuildingRemovalPackage(int entityId) implements CustomPacketPayload {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -63,21 +64,31 @@ public record BuildingRemovalPackage(int entityId) implements CustomPacketPayloa
         dummy_blueprint.set(AllDataComponents.SCHEMATIC_ROTATION, entity.rotation);
         dummy_blueprint.set(AllDataComponents.SCHEMATIC_MIRROR, entity.mirror);
 
-        printer.loadSchematic(dummy_blueprint, level, false);
+        printer.loadSchematic(dummy_blueprint, level, !context.player().canUseGameMasterBlocks());
         if (!printer.isLoaded() || printer.isErrored()) {
             LOGGER.warn("Schematic printer load failed");
             return;
         }
-
+        entity.remove(Entity.RemovalReason.DISCARDED);
+        Vector<BlockPos> blocksToRemove = new Vector<>();
         while (printer.advanceCurrentPos()) {
             printer.handleCurrentTarget((pos, state, blockEntity) -> {
-                if (level.getBlockState(printer.getCurrentTarget()) == state) {
-                    level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                if (level.getBlockState(printer.getCurrentTarget()).getBlock() == state.getBlock()) {
+                    blocksToRemove.add(printer.getCurrentTarget());
                 }
             }, (pos, entity1) -> {});
         }
-
-        entity.remove(Entity.RemovalReason.DISCARDED);
-
+        //
+        for (BlockPos blockPos : blocksToRemove) {
+            // 这几个 flags 可以防止方块拆除时有额外的掉落物（比如机械动力的伪装半砖），也能防止依附的方块因失去依附而掉落
+            // 因此会导致不属于原理图的(后来放上的)依附方块悬浮在空中
+            level.setBlock(blockPos, Blocks.BARRIER.defaultBlockState(), 2 | 16 | 32 | 64);
+        }
+        for (BlockPos blockPos : blocksToRemove) {
+            // 为了解决上面的问题，可以重新触发一次更新，但这也带来了额外的性能开销，尤其是原理图过大时
+            // 如果这真的引发了很大的问题，之后考虑给原理图设置一个配置项，可以由整合包开发者决定该原理图需不需要这样善后
+            // 如果不需要善后，则不执行这一步，并且上一步设置为直接替换为空气
+            level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
+        }
     }
 }

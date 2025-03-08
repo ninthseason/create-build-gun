@@ -32,7 +32,6 @@ public class ConfigSpec {
     public static class TabEntry {
         public String id;
         public String name;
-        public int ordinal;
     }
 
     public static ConfigSpec loadFrom(String file) {
