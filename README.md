@@ -134,6 +134,13 @@ In this version removing buildings will not return materials. It may be added in
 
 Since there is no validation of the distance between the player and the structure being demolished, an untrustworthy player could forge packets to remove buildings from any distance.
 
+## 0.0.4 Changelog
+
+Fixed a bug that the building bounding box was incorrectly positioned when placed with rotation and mirroring.
+
+## 0.0.5 Changelog
+
+Fixed the issue where buildings could not be removed cleanly or would produce additional drops when removed.
 
 # 机械动力 | 建造枪
 
@@ -274,3 +281,10 @@ Since there is no validation of the distance between the player and the structur
 
 因为并未核对玩家请求拆除的建筑和玩家所在位置的距离， 不安分的玩家可以通过伪造数据包无视距离拆除建筑。
 
+## 0.0.4 更新日志
+
+修复建筑边框生成不正确的问题。
+
+## 0.0.5 更新日志
+
+修复无法干净地移除建筑或移除建筑会产生额外掉落物的问题
